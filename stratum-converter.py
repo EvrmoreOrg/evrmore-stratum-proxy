@@ -161,7 +161,7 @@ class StratumSession(RPCSession):
     async def handle_authorize(self, username: str, password: str):
         # The first address that connects is the one that is used
         address = username.split('.')[0]
-        if base58.b58decode_check(address)[0] != (111 if self._testnet else 60):
+        if base58.b58decode_check(address)[0] != (111 if self._testnet else 33):
             raise RPCError(20, f'Invalid address {address}')
         if not self._state.address:
             self._state.address = address
@@ -382,6 +382,7 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     coinbase_script = op_push(len(bip34_height)) + bip34_height + b'\0' + op_push(len(arbitrary_data)) + arbitrary_data
                     coinbase_txin = bytes(32) + b'\xff'*4 + var_int(len(coinbase_script)) + coinbase_script + b'\xff'*4
                     vout_to_miner = b'\x76\xa9\x14' + base58.b58decode_check(state.address)[1:] + b'\x88\xac'
+                    vout_to_devfund = b'\xa9\x14' + base58.b58decode_check("e3Rvyh7CJDnVL29PWFoEaWoLd2y529t9mA")[1:] + b'\x87'
 
                     # Concerning the default_witness_commitment:
                     # https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure
@@ -395,15 +396,17 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     state.coinbase_tx = (int(1).to_bytes(4, 'little') + \
                                     b'\x00\x01' + \
                                     b'\x01' + coinbase_txin + \
-                                    b'\x02' + \
-                                        coinbase_sats_int.to_bytes(8, 'little') + op_push(len(vout_to_miner)) + vout_to_miner + \
+                                    b'\x03' + \
+                                        int(coinbase_sats_int*0.9).to_bytes(8, 'little') + op_push(len(vout_to_miner)) + vout_to_miner + \
+                                        int(coinbase_sats_int*0.1).to_bytes(8, 'little') + op_push(len(vout_to_devfund)) + vout_to_devfund + \
                                         bytes(8) + op_push(len(witness_vout)) + witness_vout + \
                                     b'\x01\x20' + bytes(32) + bytes(4))
 
                     coinbase_no_wit = int(1).to_bytes(4, 'little') + \
                                         b'\x01' + coinbase_txin + \
-                                        b'\x02' + \
-                                            coinbase_sats_int.to_bytes(8, 'little') + op_push(len(vout_to_miner)) + vout_to_miner + \
+                                        b'\x03' + \
+                                            int(coinbase_sats_int*0.9).to_bytes(8, 'little') + op_push(len(vout_to_miner)) + vout_to_miner + \
+                                            int(coinbase_sats_int*0.1).to_bytes(8, 'little') + op_push(len(vout_to_devfund)) + vout_to_devfund + \
                                             bytes(8) + op_push(len(witness_vout)) + witness_vout + \
                                         bytes(4)
                     state.coinbase_txid = dsha256(coinbase_no_wit)

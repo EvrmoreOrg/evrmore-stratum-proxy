@@ -1,4 +1,8 @@
-# ravencoin-stratum-proxy
+This repository was forked from Kralverde's https://github.com/kralverde/ravencoin-stratum-proxy
+
+Note: Preliminary version which works. But the hard-coded minerdevfund address will need to be changed as required by Evrmore
+
+# evrmore-stratum-proxy
 Allows you to mine directly to your own local wallet/node with any mining software that uses the stratum protocol.
 
 If you are a windows user and are not familiar with python, a walk-through and auto installer is avaliable for a (hopefully) easy install. See [here](#windows).
@@ -32,7 +36,7 @@ Mining software will only send a share when it has found a block. No shares for 
 A bat file is avaliable to auto install python and dependencies and generate another bat file to run the stratum.
 1. Ensure your node is configured [as required](#node).
 2. (Re)start your node (the qt wallet works).
-3. Download this repo (https://github.com/kralverde/ravencoin-stratum-proxy/archive/refs/heads/master.zip)
+3. Download this repo (https://github.com/EvrmoreOrg/evrmore-stratum-proxy/archive/refs/heads/master.zip)
 4. Unzip the downloaded file
 5. Open the unzipped folder
 6. Open the `windows` folder
@@ -44,22 +48,22 @@ A bat file is avaliable to auto install python and dependencies and generate ano
 
 ## Node Requirements:
 
-Requires the following `raven.conf` options:
+Requires the following `evrmore.conf` options:
 ```
 server=1
 rpcuser=my_username
 rpcpassword=my_password
 rpcallowip=127.0.0.1
 ```
-On *nix OS's this file is located at `~/.raven` by default. On windows, this file is located at `%appdata%\roaming\Raven`.
+On *nix OS's this file is located at `~/.evrmore` by default. On windows, this file is located at `%appdata%\roaming\Evrmore`.
 
-You may need to create the `raven.conf` file and add those lines if it does not exist.
+You may need to create the `evrmore.conf` file and add those lines if it does not exist.
 
-For testnet you can add `testnet=1` to your `raven.conf`
+For testnet you can add `testnet=1` to your `evrmore.conf`
 
 note:
-- Default Mainnet rpcport = `8766`
-- Default Testnet rpcport = `18766`
+- Default Mainnet rpcport = `8819`
+- Default Testnet rpcport = `18819`
 
 Make sure you configure the rpcport on `stratum-converter.py` accordingly.
 
@@ -70,32 +74,20 @@ The stratum converter uses the following flags `python stratum-converter.py Port
 
 With this in mind we can run **testnet** from a local node with a local miner:
 ```
-python3 stratum-converter.py 54325 localhost my_username my_password 18766 false true
+python3 stratum-converter.py 54325 localhost my_username my_password 18819 false true
 ```
 And for a local node on **mainnet** with an external miner:
 ```
-python3 stratum-converter.py 54325 localhost my_username my_password 8766 true
+python3 stratum-converter.py 54325 localhost my_username my_password 8819 true
 ```
 
 Connect to it with your miner of choise:
 
 | status | miner | example |
 | - | - | - |
-| :heavy_check_mark: Works | T-rex | t-rex -a kawpow -o stratum+tcp://PROXY_IP:54325 -u YOUR_WALLET_ADDRESS -p x |
-| :heavy_check_mark: Works | TeamRedMiner | teamredminer -o stratum+tcp://PROXY_IP:54325 -u YOUR_WALLET_ADDRESS -p x --eth_hash_report=on |
-| :heavy_check_mark: Works | Gminer | miner --algo kawpow --server stratum+tcp://PROXY_IP:54325 --user YOUR_WALLET_ADDRESS --pass x |
-| :exclamation:   Errors | NBminer | :grey_question: |
-| :heavy_check_mark: Works | kawpowminer | kawpowminer -P stratum+tcp://YOUR_WALLET_ADDRESS.worker@PROXY_IP:54325 |
+| :heavy_check_mark: Works | evrprogpowminer | evrprogpowminer -P stratum+tcp://YOUR_WALLET_ADDRESS.worker@PROXY_IP:54325 |
 
 <a name="help"/>
 
 ## Help:
 @kralverde#0550 is avaliable on the community ravencoin server (https://discord.gg/jn6uhur)
-
-© 2022 GitHub, Inc.
-Terms
-Privacy
-
-
-
-
