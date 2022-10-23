@@ -15,7 +15,8 @@ from hashlib import sha256
 from typing import Set, List, Optional
 
 
-KAWPOW_EPOCH_LENGTH = 7500
+#KAWPOW_EPOCH_LENGTH = 7500
+KAWPOW_EPOCH_LENGTH = 12000
 hashratedict = {}
 
 def var_int(i: int) -> bytes:
