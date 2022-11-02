@@ -372,9 +372,9 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     if original_state is None:
                         original_state = deepcopy(state)
 
-                    bip34_height = state.height.to_bytes(4, 'little')
-                    while bip34_height[-1] == 0:
-                        bip34_height = bip34_height[:-1]
+                    bip34_height = state.height.to_bytes(2, 'little')
+                    #while bip34_height[-1] == 0:
+                    #    bip34_height = bip34_height[:-1]
 
                     # Note that there is a max allowed length of arbitrary data.
                     # I forget what it is (TODO lol) but note that this string is close
