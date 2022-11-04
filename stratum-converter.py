@@ -9,7 +9,9 @@ import base58
 import sha3
 
 from aiohttp import ClientSession
-from aiorpcx import RPCSession, JSONRPCConnection, JSONRPCAutoDetect, Request, serve_rs, handler_invocation, RPCError, TaskGroup
+# from aiorpcx import RPCSession, JSONRPCConnection, JSONRPCAutoDetect, Request, serve_rs, handler_invocation, RPCError, TaskGroup
+from aiorpcx import RPCSession, JSONRPCConnection, JSONRPCAutoDetect, Request, serve_rs, handler_invocation, RPCError, TaskGroup, JSONRPCv1
+# This fixes issue with JSON RPC v1 / v2 on EVR fork
 from functools import partial
 from hashlib import sha256
 from typing import Set, List, Optional
@@ -115,7 +117,9 @@ def lookup_old_state(queue, id: str) -> Optional[TemplateState]:
 class StratumSession(RPCSession):
 
     def __init__(self, state: TemplateState, old_states, testnet: bool, node_url: str, node_username: str, node_password: str, node_port: int, transport):
-        connection = JSONRPCConnection(JSONRPCAutoDetect)
+        # connection = JSONRPCConnection(JSONRPCAutoDetect)
+        connection = JSONRPCConnection(JSONRPCv1)
+        # Fix problem with JSON v1 and v2
         super().__init__(transport, connection=connection)
         self._state = state
         self._testnet = testnet
