@@ -387,7 +387,7 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     coinbase_script = op_push(len(bip34_height)) + bip34_height + b'\0' + op_push(len(arbitrary_data)) + arbitrary_data
                     coinbase_txin = bytes(32) + b'\xff'*4 + var_int(len(coinbase_script)) + coinbase_script + b'\xff'*4
                     vout_to_miner = b'\x76\xa9\x14' + base58.b58decode_check(state.address)[1:] + b'\x88\xac'
-                    vout_to_devfund = b'\xa9\x14' + base58.b58decode_check("e3Rvyh7CJDnVL29PWFoEaWoLd2y529t9mA")[1:] + b'\x87'
+                    vout_to_devfund = b'\xa9\x14' + base58.b58decode_check("eHNUGzw8ZG9PGC8gKtnneyMaQXQTtAUm98")[1:] + b'\x87'
 
                     # Concerning the default_witness_commitment:
                     # https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure
