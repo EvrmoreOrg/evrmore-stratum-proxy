@@ -1,19 +1,14 @@
 This repository was forked from Kralverde's https://github.com/kralverde/ravencoin-stratum-proxy
 
-Note: Preliminary version which works. But the hard-coded minerdevfund address will need to be changed as required by Evrmore
-
 # evrmore-stratum-proxy
 Allows you to mine directly to your own local wallet/node with any mining software that uses the stratum protocol.
 
 If you are a windows user and are not familiar with python, a walk-through and auto installer is avaliable for a (hopefully) easy install. See [here](#windows).
 
 ## *Important Note*
-This is BETA software mainly tested on test-net, but has been confirmed to work on mainnet. (First known coinbase thanks to @pdath: https://rvn.cryptoscope.io/api/getrawtransaction/?txid=abf95dd29ac6732b5ff068bbc1063ef734268a2f04459f3be8ce2f5ea2d1e529&decode=1 can check by putting the vin0 coinbase into a hex->ascii converter).
-
-## *Important Note 2*
 This is not pool software and is meant for solo-mining. All proceeds go to the address of the first miner that connects.
 
-## *Important Note 3*
+## *Important Note 2*
 Mining software will only send a share when it has found a block. No shares for long periods of time is normal behavior.
 
 ## Table of Contents  
@@ -26,6 +21,7 @@ Mining software will only send a share when it has found a block. No shares for 
 
 ## Setup:
 
+#### For Linux:
 1. Requires python 3.8+
 2. Run `python3 -m pip install -r requirements.txt`
   - Note that the pysha3 module will need to be compiled so you need some kind of C compiler installed. Alternatively, a precompiled `.whl` is avaliable in `windows/python_modules`.
@@ -42,7 +38,9 @@ A bat file is avaliable to auto install python and dependencies and generate ano
 6. Open the `windows` folder
 7. Double-click `generate_bat.bat`
 8. After `generate_bat.bat` completes with no errors, go back to the previous folder.
-9. Double-click `run.bat` to run the stratum converter.
+9. Copy `run.bat` to the `/windows` folder.
+10. Double-click `run.bat` to run the stratum converter.
+11. [Connect to the stratum](#connect)
 
 <a name="node"/>
 
@@ -70,9 +68,13 @@ Make sure you configure the rpcport on `stratum-converter.py` accordingly.
 <a name="usage"/>
 
 ## Usage:
-The stratum converter uses the following flags `python stratum-converter.py Port_for_miner Ip_of_node Rpc_username Rpc_password Rpc_port Allow_external_connections Is_testnet(optional)` 
+The stratum converter, `python stratum-converter.py`, uses the following flags:<br> 
+`Port_for_miner Ip_of_node`<br>
+`Rpc_username Rpc_password`<br>
+`Rpc_port Allow_external_connections`<br>
+`Is_testnet` (optional)<br>
 
-With this in mind we can run **testnet** from a local node with a local miner:
+With this in mind, we can run **testnet** from a local node with a local miner:
 ```
 python3 stratum-converter.py 54325 localhost my_username my_password 18819 false true
 ```
@@ -80,12 +82,13 @@ And for a local node on **mainnet** with an external miner:
 ```
 python3 stratum-converter.py 54325 localhost my_username my_password 8819 true
 ```
-
+## Connect:
 Connect to it with your miner of choise:
 
 | status | miner | example |
 | - | - | - |
 | :heavy_check_mark: Works | evrprogpowminer | evrprogpowminer -P stratum+tcp://YOUR_WALLET_ADDRESS.worker@PROXY_IP:54325 |
+| ❓ Testing | Wild-Rig Multi | wildrig --algo evrprogpow --url stratum+tcp://pool.com:3333 --user Wallet.Worker --pass x |
 
 <a name="help"/>
 
