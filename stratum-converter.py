@@ -151,7 +151,7 @@ class StratumSession(RPCSession):
     async def connection_lost(self):
         worker = str(self).strip('>').split()[3]
         print(f'Connection lost: {worker}')
-        del hashratedict[worker]
+        hashratedict.pop(worker, None)
         self._state.new_sessions.discard(self)
         self._state.all_sessions.discard(self)
         return await super().connection_lost()
