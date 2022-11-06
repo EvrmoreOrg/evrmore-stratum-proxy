@@ -6,10 +6,10 @@ Allows you to mine directly to your own local wallet/node with any mining softwa
 If you are a windows user and are not familiar with python, a walk-through and auto installer is avaliable for a (hopefully) easy install. See [here](#windows).
 
 ## *Important Note*
-This is not pool software and is meant for solo-mining. All proceeds go to the address of the first miner that connects.
+This is not pool software and is meant for solo-mining! <br><b>All proceeds go to the address of the <ins>first miner</ins> that connects.</b>
 
 ## *Important Note 2*
-Mining software will only send a share when it has found a block. No shares for long periods of time is normal behavior.
+Mining software will only send a share when it has found a block.<br> <b>No shares for long periods of time is normal behavior!</b>
 
 ## Table of Contents  
 - [Setup](#setup)
@@ -29,7 +29,7 @@ Mining software will only send a share when it has found a block. No shares for 
 <a name="windows"/>
 
 #### For Windows:
-A bat file is avaliable to auto install python and dependencies and generate another bat file to run the stratum.
+A bat file is avaliable to <b>auto install</b> python and dependencies and generate another bat file to run the stratum.
 1. Ensure your node is configured [as required](#node).
 2. (Re)start your node (the qt wallet works).
 3. Download this repo (https://github.com/EvrmoreOrg/evrmore-stratum-proxy/archive/refs/heads/master.zip)
@@ -59,7 +59,8 @@ You may need to create the `evrmore.conf` file and add those lines if it does no
 
 For testnet you can add `testnet=1` to your `evrmore.conf`
 
-note:
+<b>Note: Please keep in mind that EVR testnet is <ins>sha256d</ins> algorithm and must be CPU mined.</b>
+
 - Default Mainnet rpcport = `8819`
 - Default Testnet rpcport = `18819`
 
@@ -88,8 +89,17 @@ Connect to it with your miner of choise:
 | status | miner | example |
 | - | - | - |
 | :heavy_check_mark: Works | evrprogpowminer | evrprogpowminer -P stratum+tcp://YOUR_WALLET_ADDRESS.worker@PROXY_IP:54325 |
-| ❓ Testing | Wild-Rig Multi | wildrig --algo evrprogpow --url stratum+tcp://pool.com:3333 --user Wallet.Worker --pass x |
+| :heavy_check_mark: Works | Wild-Rig Multi | wildrig --algo evrprogpow --url stratum+tcp://pool.com:3333 --user Wallet.Worker --pass x |
 
+If using stratum-proxy + Wild-Rig Multi to solo mine locally directly to coin daemon then use:<br>
+`wildrig.exe --algo evrprogpow --url stratum+tcp://127.0.0.1:3333 --user Wallet.Worker --pass x` if local.
+
+or if you want to point your HiveOS rigs or other outside miners to the stratum-proxy then do it like this:<br>
+<br>
+`wildrig.exe --algo evrprogpow --url stratum+tcp://<IP of PC w/ stratum-proxy>:<proxy port> --user Wallet.Worker --pass x`
+<br>
+<br>
+Example: `wildrig.exe --algo evrprogpow --url stratum+tcp://192.168.1.112:2525 --user Wallet.Worker --pass x`
 <a name="help"/>
 
 ## Help:
