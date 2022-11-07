@@ -4,7 +4,6 @@ This repository was forked from Kralverde's https://github.com/kralverde/ravenco
 Allows you to mine directly to your own local wallet/node with any mining software that uses the stratum protocol.
 
 If you are a windows user and are not familiar with python, a walk-through and auto installer is avaliable for a (hopefully) easy install. See [here](#windows).
-
 ## *Important Note*
 This is not pool software and is meant for solo-mining! <br><b>All proceeds go to the address of the <ins>first miner</ins> that connects.</b>
 
@@ -32,7 +31,7 @@ Mining software will only send a share when it has found a block.<br> <b>No shar
 A bat file is avaliable to <b>auto install</b> python and dependencies and generate another bat file to run the stratum.
 1. Ensure your node is configured [as required](#node).
 2. (Re)start your node (the qt wallet works).
-3. Download this repo (https://github.com/EvrmoreOrg/evrmore-stratum-proxy/archive/refs/heads/master.zip)
+3. Download this repo (https://github.com/Luckyblocks-dev/evrmore-stratum-proxy/archive/refs/heads/master.zip)
 4. Unzip the downloaded file
 5. Open the unzipped folder
 6. Open the `windows` folder
