@@ -9,10 +9,11 @@ import base58
 import sha3
 
 from aiohttp import ClientSession
-from aiorpcx import RPCSession, JSONRPCConnection, JSONRPCAutoDetect, Request, serve_rs, handler_invocation, RPCError, TaskGroup
+from aiorpcx import RPCSession, JSONRPCConnection, JSONRPCAutoDetect, Request, serve_rs, handler_invocation, RPCError, TaskGroup, JSONRPCv1
 from functools import partial
 from hashlib import sha256
 from typing import Set, List, Optional
+from datetime import datetime
 
 
 #KAWPOW_EPOCH_LENGTH = 7500
@@ -115,7 +116,7 @@ def lookup_old_state(queue, id: str) -> Optional[TemplateState]:
 class StratumSession(RPCSession):
 
     def __init__(self, state: TemplateState, old_states, testnet: bool, node_url: str, node_username: str, node_password: str, node_port: int, transport):
-        connection = JSONRPCConnection(JSONRPCAutoDetect)
+        connection = JSONRPCConnection(JSONRPCv1)
         super().__init__(transport, connection=connection)
         self._state = state
         self._testnet = testnet
@@ -147,7 +148,7 @@ class StratumSession(RPCSession):
     async def connection_lost(self):
         worker = str(self).strip('>').split()[3]
         print(f'Connection lost: {worker}')
-        del hashratedict[worker]
+        hashratedict.pop(worker, None)
         self._state.new_sessions.discard(self)
         self._state.all_sessions.discard(self)
         return await super().connection_lost()
@@ -169,11 +170,24 @@ class StratumSession(RPCSession):
         return True
 
     async def handle_submit(self, worker: str, job_id: str, nonce_hex: str, header_hex: str, mixhash_hex: str):
+        log_file = open("solved_blocks.txt", "a")
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        current_date = now.strftime("%B %d, %Y")
+
+        log_file.write(current_date + " " + current_time + "\n")
 
         print('Possible solution')
+        log_file.write("Possible solution\n")
         print(worker)
+        log_file.write(worker + "\n")
         print(job_id)
+        log_file.write(job_id + "\n")
         print(header_hex)
+        log_file.write(header_hex + "\n")
+       
+
+
 
         # We can still propogate old jobs; there may be a chance that they get used
         state = self._state
@@ -194,7 +208,7 @@ class StratumSession(RPCSession):
         mixhash_hex = bytes.fromhex(mixhash_hex)[::-1].hex()
         
         block_hex = state.build_block(nonce_hex, mixhash_hex)
-
+        print(block_hex)
         data = {
             'jsonrpc':'2.0',
             'id':'0',
@@ -205,6 +219,7 @@ class StratumSession(RPCSession):
             async with session.post(f'http://{self._node_username}:{self._node_password}@{self._node_url}:{self._node_port}', data=json.dumps(data)) as resp:
                 json_resp = await resp.json()
                 print(json_resp)
+                log_file.write(json.dumps(json_resp) + "\n")
                 if json_resp.get('error', None):
                     raise RPCError(20, json_resp['error'])
                 
@@ -212,12 +227,16 @@ class StratumSession(RPCSession):
                 if result == 'inconclusive':
                     # inconclusive - valid submission but other block may be better, etc.
                     print('Valid block but inconclusive')
+                    log_file.write("Valid block but inconclusive \n")
                 elif result == 'duplicate':
                     print('Valid block but duplicate')
+                    log_file.write("Valid block but duplicate \n")
                 elif result == 'duplicate-inconclusive':
                     print('Valid block but duplicate-inconclusive')
+                    log_file.write("Valid block but duplicate-inconclusive \n")
                 elif result == 'inconclusive-not-best-prevblk':
                     print('Valid block but inconclusive-not-best-prevblk')
+                    log_file.write("Valid block but inconclusive-not-best-prevblk \n")
                 
                 if result not in (None, 'inconclusive', 'duplicate', 'duplicate-inconclusive', 'inconclusive-not-best-prevblk'):
                     raise RPCError(20, json_resp['result'])
@@ -226,8 +245,10 @@ class StratumSession(RPCSession):
         block_height = int.from_bytes(bytes.fromhex(block_hex[(4+32+32+4+4)*2:(4+32+32+4+4+4)*2]), 'little', signed=False)
         msg = f'Found block (may or may not be accepted by the chain): {block_height}'
         print(msg)
+        log_file.write(msg + " \n")
+        log_file.write("\n\n\n")
         await self.send_notification('client.show_message', (msg,))
-
+        log_file.close()
         return True
     
     async def handle_eth_submitHashrate(self, hashrate: str, clientid: str):
@@ -383,7 +404,7 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     coinbase_script = op_push(len(bip34_height)) + bip34_height + b'\0' + op_push(len(arbitrary_data)) + arbitrary_data
                     coinbase_txin = bytes(32) + b'\xff'*4 + var_int(len(coinbase_script)) + coinbase_script + b'\xff'*4
                     vout_to_miner = b'\x76\xa9\x14' + base58.b58decode_check(state.address)[1:] + b'\x88\xac'
-                    vout_to_devfund = b'\xa9\x14' + base58.b58decode_check("e3Rvyh7CJDnVL29PWFoEaWoLd2y529t9mA")[1:] + b'\x87'
+                    vout_to_devfund = b'\xa9\x14' + base58.b58decode_check("eHNUGzw8ZG9PGC8gKtnneyMaQXQTtAUm98")[1:] + b'\x87'
 
                     # Concerning the default_witness_commitment:
                     # https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#commitment-structure
