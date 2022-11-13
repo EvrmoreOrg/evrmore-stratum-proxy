@@ -19,6 +19,8 @@ Mining software will only send a share when it has found a block.<br> <b>No shar
 <a name="setup"/>
 
 ## Setup:
+Note: Although this software allows configuration for testnet, Evrmore does not need this software for testnet because it is sha256d CPU mined, not GPU mined.
+Use for Evrmore mainnet only.
 
 #### For Linux:
 1. Requires python 3.8+
@@ -31,7 +33,7 @@ Mining software will only send a share when it has found a block.<br> <b>No shar
 A bat file is avaliable to <b>auto install</b> python and dependencies and generate another bat file to run the stratum.
 1. Ensure your node is configured [as required](#node).
 2. (Re)start your node (the qt wallet works).
-3. Download this repo (https://github.com/Luckyblocks-dev/evrmore-stratum-proxy/archive/refs/heads/master.zip)
+3. Download this repo (https://github.com/EvrmoreOrg/evrmore-stratum-proxy/archive/refs/heads/master.zip)
 4. Unzip the downloaded file
 5. Open the unzipped folder
 6. Open the `windows` folder
