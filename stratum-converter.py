@@ -393,7 +393,6 @@ async def stateUpdater(state: TemplateState, old_states, drop_after, node_url: s
                     if original_state is None:
                         original_state = deepcopy(state)
 
-
                     bytes_needed_sub_1 = 0
                     while True:
                         if state.height <= (2**(7 + (8 * bytes_needed_sub_1))) - 1:
