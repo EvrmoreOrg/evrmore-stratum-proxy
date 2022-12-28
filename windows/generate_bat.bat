@@ -1,13 +1,13 @@
 @echo off
-:: Commenting-out this DIR code fixes batch file error; haven't investigated further.
-:: set "CURRENT_DIRECTORY=%~dp0"
-::if NOT "%CURRENT_DIRECTORY:~-33%" == "\evrmore-stratum-proxy-master\windows\" (
-::    if NOT "%CURRENT_DIRECTORY:~-40%" == "\evrmore-stratum-proxy-master\windows\" (
-::        echo Error: Please run this batch file as-is from its original location in the ravencoin-stratum-proxy folder
-::	pause
-::        exit /B
-::    )
-::)
+
+set "CURRENT_DIRECTORY=%~dp0"
+if NOT "%CURRENT_DIRECTORY:~-31%" == "\evrmore-stratum-proxy\windows\" (
+    if NOT "%CURRENT_DIRECTORY:~-38%" == "\evrmore-stratum-proxy-master\windows\" (
+        echo Error: Please run this batch file as-is from its original location in the ravencoin-stratum-proxy folder
+	pause
+        exit /B
+    )
+)
 
 echo checking for python...
 
